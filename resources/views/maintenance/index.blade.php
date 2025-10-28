@@ -33,31 +33,44 @@
                 <div class="card-body">
                     <form method="GET" action="{{ route('maintenance.index') }}">
                         <div class="row g-3">
-                            <div class="col-md-3">
+                            <div class="col-md-2">
+                                <label for="search" class="form-label">Recherche</label>
+                                <input type="text" class="form-control" id="search" name="search" 
+                                       value="{{ request('search') }}" placeholder="Description, technicien...">
+                            </div>
+                            <div class="col-md-2">
                                 <label for="status" class="form-label">Statut</label>
                                 <select class="form-select" id="status" name="status">
-                                    <option value="">Tous les statuts</option>
+                                    <option value="all">Tous les statuts</option>
                                     <option value="scheduled" {{ request('status') == 'scheduled' ? 'selected' : '' }}>Planifiée</option>
                                     <option value="in_progress" {{ request('status') == 'in_progress' ? 'selected' : '' }}>En cours</option>
                                     <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Terminée</option>
                                     <option value="cancelled" {{ request('status') == 'cancelled' ? 'selected' : '' }}>Annulée</option>
                                 </select>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <label for="type" class="form-label">Type</label>
                                 <select class="form-select" id="type" name="type">
-                                    <option value="">Tous les types</option>
+                                    <option value="all">Tous les types</option>
                                     <option value="preventive" {{ request('type') == 'preventive' ? 'selected' : '' }}>Préventive</option>
                                     <option value="corrective" {{ request('type') == 'corrective' ? 'selected' : '' }}>Corrective</option>
                                     <option value="predictive" {{ request('type') == 'predictive' ? 'selected' : '' }}>Prédictive</option>
                                 </select>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <label for="technician" class="form-label">Technicien</label>
                                 <input type="text" class="form-control" id="technician" name="technician" 
                                        value="{{ request('technician') }}" placeholder="Nom du technicien">
                             </div>
-                            <div class="col-md-3 d-flex align-items-end">
+                            <div class="col-md-2">
+                                <label for="sort" class="form-label">Trier par</label>
+                                <select class="form-select" id="sort" name="sort">
+                                    <option value="scheduled_date" {{ request('sort') == 'scheduled_date' ? 'selected' : '' }}>Date prévue</option>
+                                    <option value="created_at" {{ request('sort') == 'created_at' ? 'selected' : '' }}>Date création</option>
+                                    <option value="technician_name" {{ request('sort') == 'technician_name' ? 'selected' : '' }}>Technicien</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2 d-flex align-items-end">
                                 <div class="btn-group w-100">
                                     <button type="submit" class="btn btn-primary">
                                         <i class="fas fa-filter"></i> Filtrer
@@ -72,9 +85,76 @@
                 </div>
             </div>
 
+            <!-- Statistiques -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card bg-primary text-white">
+                        <div class="card-body py-3">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h6 class="card-title mb-0">Total</h6>
+                                    <h4 class="mb-0">{{ $totalMaintenance }}</h4>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-tools fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-info text-white">
+                        <div class="card-body py-3">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h6 class="card-title mb-0">Planifiées</h6>
+                                    <h4 class="mb-0">{{ $statusCounts['scheduled'] }}</h4>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-clock fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-warning text-white">
+                        <div class="card-body py-3">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h6 class="card-title mb-0">En cours</h6>
+                                    <h4 class="mb-0">{{ $statusCounts['in_progress'] }}</h4>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-play-circle fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-success text-white">
+                        <div class="card-body py-3">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h6 class="card-title mb-0">Terminées</h6>
+                                    <h4 class="mb-0">{{ $statusCounts['completed'] }}</h4>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-check-circle fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0">Historique des Maintenances ({{ $maintenances->count() }})</h5>
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Historique des Maintenances</h5>
+                    <div class="text-muted">
+                        Affichage de {{ $maintenances->firstItem() }} à {{ $maintenances->lastItem() }} sur {{ $maintenances->total() }} maintenance(s)
+                    </div>
                 </div>
                 <div class="card-body">
                     @if($maintenances->count() > 0)
@@ -189,11 +269,16 @@
                     </div>
 
                     <!-- Pagination -->
-                    @if($maintenances->hasPages())
-                    <div class="d-flex justify-content-center mt-4">
-                        {{ $maintenances->links() }}
+                    <div class="d-flex justify-content-between align-items-center mt-4">
+                        <div class="text-muted">
+                            Page {{ $maintenances->currentPage() }} sur {{ $maintenances->lastPage() }}
+                        </div>
+                        <nav aria-label="Pagination">
+                            <ul class="pagination mb-0">
+                                {{ $maintenances->links() }}
+                            </ul>
+                        </nav>
                     </div>
-                    @endif
 
                     @else
                     <div class="text-center py-5">
@@ -210,4 +295,15 @@
         </div>
     </div>
 </div>
+
+<style>
+.pagination .page-link {
+    border-radius: 5px;
+    margin: 0 2px;
+}
+.pagination .page-item.active .page-link {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+</style>
 @endsection

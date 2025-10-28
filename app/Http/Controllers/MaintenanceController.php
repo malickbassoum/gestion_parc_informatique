@@ -19,24 +19,68 @@ class MaintenanceController extends Controller
             abort(403, 'Accès non autorisé.');
         }
 
-        $query = Maintenance::with('equipment')->latest();
+        // Récupérer les paramètres de recherche
+        $search = $request->input('search');
+        $status = $request->input('status');
+        $type = $request->input('type');
+        $technician = $request->input('technician');
+        $sort = $request->input('sort', 'scheduled_date');
+        $order = $request->input('order', 'desc');
 
-        // Filtres
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
+        // Construire la requête
+        $query = Maintenance::with('equipment');
+
+        // Appliquer les filtres
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('description', 'like', "%{$search}%")
+                  ->orWhere('technician_name', 'like', "%{$search}%")
+                  ->orWhere('problem_reported', 'like', "%{$search}%")
+                  ->orWhereHas('equipment', function($q) use ($search) {
+                      $q->where('name', 'like', "%{$search}%")
+                        ->orWhere('serial_number', 'like', "%{$search}%");
+                  });
+            });
         }
 
-        if ($request->filled('type')) {
-            $query->where('type', $request->type);
+        if ($status && $status !== 'all') {
+            $query->where('status', $status);
         }
 
-        if ($request->filled('technician')) {
-            $query->where('technician_name', 'like', '%' . $request->technician . '%');
+        if ($type && $type !== 'all') {
+            $query->where('type', $type);
         }
 
-        $maintenances = $query->paginate(10);
+        if ($technician) {
+            $query->where('technician_name', 'like', "%{$technician}%");
+        }
 
-        return view('maintenance.index', compact('maintenances'));
+        // Appliquer le tri
+        $query->orderBy($sort, $order);
+
+        // Pagination - 10 éléments par page
+        $maintenances = $query->paginate(10)->withQueryString();
+
+        // Statistiques
+        $totalMaintenance = Maintenance::count();
+        $statusCounts = [
+            'scheduled' => Maintenance::where('status', 'scheduled')->count(),
+            'in_progress' => Maintenance::where('status', 'in_progress')->count(),
+            'completed' => Maintenance::where('status', 'completed')->count(),
+            'cancelled' => Maintenance::where('status', 'cancelled')->count(),
+        ];
+
+        return view('maintenance.index', compact(
+            'maintenances',
+            'search',
+            'status',
+            'type',
+            'technician',
+            'sort',
+            'order',
+            'totalMaintenance',
+            'statusCounts'
+        ));
     }
 
     public function create()

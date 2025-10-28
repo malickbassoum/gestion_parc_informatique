@@ -12,17 +12,68 @@ class EquipmentController extends Controller
         $this->middleware('auth');
     }
 
-    public function index()
+     public function index(Request $request)
     {
         if (!auth()->user()->hasPermission('view_equipment')) {
             abort(403, 'Accès non autorisé.');
         }
 
-        $equipment = Equipment::withCount('maintenances')->get();
-        
-        return view('equipment.index', compact('equipment'));
-    }
+        // Récupérer les paramètres de recherche
+        $search = $request->input('search');
+        $status = $request->input('status');
+        $category = $request->input('category');
+        $sort = $request->input('sort', 'name');
+        $order = $request->input('order', 'asc');
 
+        // Construire la requête
+        $query = Equipment::withCount('maintenances');
+
+        // Appliquer les filtres
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('serial_number', 'like', "%{$search}%")
+                  ->orWhere('brand', 'like', "%{$search}%")
+                  ->orWhere('model', 'like', "%{$search}%")
+                  ->orWhere('location', 'like', "%{$search}%");
+            });
+        }
+
+        if ($status && $status !== 'all') {
+            $query->where('status', $status);
+        }
+
+        if ($category && $category !== 'all') {
+            $query->where('category', $category);
+        }
+
+        // Appliquer le tri
+        $query->orderBy($sort, $order);
+
+        // Pagination - 10 éléments par page
+        $equipment = $query->paginate(10)->withQueryString();
+
+        // Statistiques pour les filtres
+        $totalEquipment = Equipment::count();
+        $categories = Equipment::distinct()->pluck('category');
+        $statusCounts = [
+            'operational' => Equipment::where('status', 'operational')->count(),
+            'maintenance' => Equipment::where('status', 'maintenance')->count(),
+            'out_of_service' => Equipment::where('status', 'out_of_service')->count(),
+        ];
+
+        return view('equipment.index', compact(
+            'equipment', 
+            'search', 
+            'status', 
+            'category', 
+            'sort', 
+            'order',
+            'totalEquipment',
+            'categories',
+            'statusCounts'
+        ));
+    }
     public function create()
     {
         if (!auth()->user()->hasPermission('create_equipment')) {
