@@ -21,6 +21,15 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     @auth
+
+                     @if(auth()->user()->hasPermission('create_equipment') || auth()->user()->hasPermission('view_equipment'))
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('import-export.index') }}">
+                            <i class="fas fa-file-import"></i> Import/Export
+                        </a>
+                    </li>
+                    @endif
+
                     @if(auth()->user()->hasPermission('manage_users'))
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('permissions.index') }}">
