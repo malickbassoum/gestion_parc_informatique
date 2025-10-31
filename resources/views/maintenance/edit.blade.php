@@ -92,7 +92,7 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="cost" class="form-label">Coût (€)</label>
+                                    <label for="cost" class="form-label">Coût FCFA</label>
                                     <input type="number" step="0.01" class="form-control @error('cost') is-invalid @enderror" 
                                            id="cost" name="cost" value="{{ old('cost', $maintenance->cost) }}">
                                     @error('cost')

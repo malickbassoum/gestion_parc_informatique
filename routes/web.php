@@ -25,7 +25,11 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('maintenance', MaintenanceController::class);
     Route::post('/maintenance/{maintenance}/start', [MaintenanceController::class, 'start'])->name('maintenance.start');
     Route::post('/maintenance/{maintenance}/complete', [MaintenanceController::class, 'complete'])->name('maintenance.complete');
-    
+    Route::resource('maintenance', MaintenanceController::class);
+Route::put('/maintenance/{maintenance}/start', [MaintenanceController::class, 'start'])->name('maintenance.start');
+Route::put('/maintenance/{maintenance}/complete', [MaintenanceController::class, 'complete'])->name('maintenance.complete');
+Route::put('/maintenance/{maintenance}/cancel', [MaintenanceController::class, 'cancel'])->name('maintenance.cancel');
+
     // Utilisateurs
     Route::resource('users', UserController::class);
     
