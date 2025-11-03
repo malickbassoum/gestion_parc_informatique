@@ -1,63 +1,7 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Import/Export - Gestion Parc Informatique</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: #f8f9fa;
-        }
-        .card {
-            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-            border: 1px solid rgba(0, 0, 0, 0.125);
-        }
-    </style>
-</head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="/">
-                <i class="fas fa-laptop-house"></i> Gestion Parc Informatique
-            </a>
-        </div>
-    </nav>
+@extends('layouts.app')
 
-    <div class="container mt-4">
-        <div class="row">
-            <div class="col-md-12">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="/dashboard">Dashboard</a></li>
-                        <li class="breadcrumb-item"><a href="/equipment">Équipements</a></li>
-                        <li class="breadcrumb-item active">Import/Export</li>
-                    </ol>
-                </nav>
 
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h1>
-                        <i class="fas fa-file-import text-primary"></i>
-                        Importation et Exportation d'Équipements
-                    </h1>
-                </div>
-
-                <!-- Messages de session -->
-                <?php
-                if(session('success')) {
-                    echo '<div class="alert alert-success alert-dismissible fade show" role="alert">
-                            <i class="fas fa-check-circle me-2"></i>'.session('success').'
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                          </div>';
-                }
-                if(session('error')) {
-                    echo '<div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <i class="fas fa-times-circle me-2"></i>'.session('error').'
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                          </div>';
-                }
-                ?>
+@section('content')
 
                 <!-- Section Importation -->
                 <div class="card mb-4">
@@ -178,5 +122,4 @@
             console.log('Page Import/Export chargée avec succès');
         }, 1000);
     </script>
-</body>
-</html>
+<@endsection

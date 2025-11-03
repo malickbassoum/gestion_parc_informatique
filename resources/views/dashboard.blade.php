@@ -4,18 +4,13 @@
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1>
-                    <i class="fas fa-tachometer-alt text-primary"></i>
-                    Tableau de Bord - Gestion du Parc Informatique
-                </h1>
-                <div class="text-muted">
-                    Bienvenue, <strong>{{ auth()->user()->name }}</strong>
-                    @foreach(auth()->user()->roles as $role)
-                        <span class="badge bg-secondary ms-1">{{ $role->name }}</span>
-                    @endforeach
-                </div>
-            </div>
+            <!-- Votre contenu actuel sans le header et la navigation -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <!-- ... -->
+        </div>
+        
+        <!-- Cartes de statistiques -->
+        <!-- ... -->
 
             <!-- Cartes de statistiques -->
             <div class="row">
