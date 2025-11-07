@@ -248,6 +248,7 @@
                     </div>
 
                     <!-- Pagination -->
+
                     <div class="d-flex justify-content-between align-items-center mt-4">
                         <div class="text-muted">
                             Page {{ $equipment->currentPage() }} sur {{ $equipment->lastPage() }}
@@ -269,6 +270,8 @@
                         </a>
                     </div>
                     @endif
+
+                    
                 </div>
             </div>
         </div>

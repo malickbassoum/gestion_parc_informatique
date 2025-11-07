@@ -22,7 +22,7 @@
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
             overflow: hidden;
             width: 100%;
-            max-width: 400px;
+            max-width: 500px;
             margin: 20px;
         }
         
@@ -42,7 +42,7 @@
         .login-header h1 {
             font-size: 1.8rem;
             margin: 0;
-            font-weight: 600;
+            font-weight: 400;
         }
         
         .login-header p {
@@ -124,7 +124,14 @@
     <div class="login-container">
         <!-- En-tête -->
         <div class="login-header">
-            <i class="fas fa-laptop-house"></i>
+            <!-- <i class="fas fa-laptop-house"></i> -->
+             <i class="sidebar-sticky">
+                    <img src="{{ asset('images/logo.png') }}" 
+                         alt="Logo" 
+                         class="logo-img" 
+                         style="height: 35px; width: auto;">
+             </i>
+
             <h1>Parc Informatique SEN-CSU</h1>
             <p>Connectez-vous à votre compte</p>
         </div>
@@ -198,13 +205,13 @@
         </div>
         
         <!-- Pied de page -->
-        <div class="login-footer">
+       <!--  <div class="login-footer">
             @if (Route::has('password.request'))
                 <a href="{{ route('password.request') }}">
                     <i class="fas fa-question-circle me-1"></i>Mot de passe oublié ?
                 </a>
             @endif
-        </div>
+        </div> -->
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>

@@ -60,6 +60,7 @@ class MaintenanceController extends Controller
 
         // Pagination - 10 éléments par page
         $maintenances = $query->paginate(10)->withQueryString();
+        // Pagination - 10 éléments par page
 
         // Statistiques
         $totalMaintenance = Maintenance::count();
@@ -250,4 +251,34 @@ class MaintenanceController extends Controller
         return redirect()->route('maintenance.index')
             ->with('success', 'Maintenance supprimée avec succès.');
     }
+
+    /**
+ * Annuler une maintenance
+ */
+    public function cancel(Request $request, Maintenance $maintenance)
+    {
+        try {
+            // Vérifier que la maintenance peut être annulée
+            if (!in_array($maintenance->status, ['scheduled', 'in_progress'])) {
+                return redirect()->back()
+                    ->with('error', 'Seules les maintenances planifiées ou en cours peuvent être annulées.');
+            }
+
+            // Mettre à jour le statut
+            $maintenance->update([
+                'status' => 'cancelled',
+                'cancelled_at' => now(),
+                'cancelled_by' => auth()->id(),
+                'cancellation_reason' => $request->cancellation_reason
+            ]);
+
+            return redirect()->route('maintenance.index')
+                ->with('success', 'Maintenance annulée avec succès.');
+
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Erreur lors de l\'annulation de la maintenance: ' . $e->getMessage());
+        }
+    }
+
 }

@@ -14,6 +14,9 @@ class EquipmentController extends Controller
 
      public function index(Request $request)
     {
+
+        $query = Equipment::query();
+
         if (!auth()->user()->hasPermission('view_equipment')) {
             abort(403, 'Accès non autorisé.');
         }
@@ -27,6 +30,9 @@ class EquipmentController extends Controller
 
         // Construire la requête
         $query = Equipment::withCount('maintenances');
+
+
+
 
         // Appliquer les filtres
         if ($search) {
@@ -52,6 +58,7 @@ class EquipmentController extends Controller
 
         // Pagination - 10 éléments par page
         $equipment = $query->paginate(10)->withQueryString();
+        
 
         // Statistiques pour les filtres
         $totalEquipment = Equipment::count();
@@ -61,6 +68,7 @@ class EquipmentController extends Controller
             'maintenance' => Equipment::where('status', 'maintenance')->count(),
             'out_of_service' => Equipment::where('status', 'out_of_service')->count(),
         ];
+       
 
         return view('equipment.index', compact(
             'equipment', 
@@ -73,6 +81,8 @@ class EquipmentController extends Controller
             'categories',
             'statusCounts'
         ));
+
+
     }
     public function create()
     {
